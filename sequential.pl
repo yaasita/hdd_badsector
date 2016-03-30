@@ -4,9 +4,13 @@ use warnings;
 use feature qw(say);
 
 my $disk = shift;
-
 my $sector = shift;
-for (($sector-100)..($sector+100)){
+if (!defined($sector)){
+    say "usage: $0 /dev/sdx 12345";
+    exit;
+}
+
+for (($sector-200)..($sector+200)){
     check_and_write_sector($_);
 }
 
