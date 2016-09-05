@@ -14,17 +14,25 @@ while (<STDIN>){
         next if /^SMART/;
         if (/\d+$/){
             my $sector = $&;
-            next if $uniq{$sector}++;
-            check_and_write_sector($sector);
-            check_and_write_sector($sector-1) if $sector > 1;
+            $uniq{$sector}++;
         }
+    }
+}
+for (keys %uniq){
+    my $n = $_;
+    say "start => ",$n;
+    my $start = $n - 1000;
+    my $end   = $n + 1000;
+    $start = 0 if $start < 0;
+    for ($start..$end){
+        check_and_write_sector($_);
     }
 }
 sub check_and_write_sector {
     my $num = shift;
     say $num;
     my $out;
-    $out = `hdparm --read-sector $& $disk`;
+    $out = `hdparm --read-sector $num $disk`;
     if ($?){
         my $cmd = "hdparm --write-sector $num --yes-i-know-what-i-am-doing $disk";
         say "\t$cmd";
